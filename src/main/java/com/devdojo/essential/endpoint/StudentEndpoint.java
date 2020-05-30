@@ -1,15 +1,16 @@
 package com.devdojo.essential.endpoint;
 
-import com.devdojo.essential.error.CustomErrorType;
 import com.devdojo.essential.error.ResourceNotFoundException;
 import com.devdojo.essential.model.Student;
 import com.devdojo.essential.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.ResourceAccessException;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -41,7 +42,8 @@ public class StudentEndpoint {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody Student student) {
+    @Transactional(rollbackOn = Exception.class)
+    public ResponseEntity<?> save(@Va @RequestBody Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
     }
 
