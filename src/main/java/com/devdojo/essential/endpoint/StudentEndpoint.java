@@ -43,7 +43,7 @@ public class StudentEndpoint {
 
     @PostMapping
     @Transactional(rollbackOn = Exception.class)
-    public ResponseEntity<?> save(@Va @RequestBody Student student) {
+    public ResponseEntity<?> save(@Valid @RequestBody Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
     }
 
