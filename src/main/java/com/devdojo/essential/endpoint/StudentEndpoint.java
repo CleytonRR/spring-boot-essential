@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("v1")
 public class StudentEndpoint {
 
     private final StudentRepository studentDAO;
@@ -28,31 +28,31 @@ public class StudentEndpoint {
         this.studentDAO = studentDAO;
     }
 
-    @GetMapping
+    @GetMapping("protected/students")
     public ResponseEntity<?> listAll(@PageableDefault(page = 0, size = 5)
             Pageable pageable) {
         return new ResponseEntity<>(studentDAO.findAll(pageable), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("protected/students/{id}")
     public ResponseEntity<?> getStudentById(@PathVariable("id") Long id) {
         Optional<Student> student = studentDAO.findById(id);
         verifyStudentExists(id);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
-    @GetMapping("/findByName/{name}")
+    @GetMapping("protected/students/findByName/{name}")
     public ResponseEntity<?> findStudentsByName(@PathVariable String name) {
         return new ResponseEntity<>(studentDAO.findByNameIgnoreCaseContaining(name), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/admin/students")
     @Transactional(rollbackOn = Exception.class)
     public ResponseEntity<?> save(@RequestBody @Valid Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/students/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         verifyStudentExists(id);
@@ -60,7 +60,7 @@ public class StudentEndpoint {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/admin/students")
     public ResponseEntity<?> update(@RequestBody Student student) {
         verifyStudentExists(student.getId());
         studentDAO.save(student);
