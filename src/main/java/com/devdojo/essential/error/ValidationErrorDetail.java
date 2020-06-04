@@ -62,7 +62,25 @@ public class ValidationErrorDetail extends ErrorDetail {
             validationErrorDetail.setStatus(status);
             validationErrorDetail.setDetail(detail);
             validationErrorDetail.setTimestamp(timestamp);
+            validationErrorDetail.fieldMessage = fieldMessage;
+            validationErrorDetail.field = field;
             return validationErrorDetail;
         }
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getFieldMessage() {
+        return fieldMessage;
+    }
+
+    public void setFieldMessage(String fieldMessage) {
+        this.fieldMessage = fieldMessage;
     }
 }

@@ -4,6 +4,8 @@ import com.devdojo.essential.error.ResourceNotFoundException;
 import com.devdojo.essential.model.Student;
 import com.devdojo.essential.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
+
+import static org.springframework.beans.support.PagedListHolder.DEFAULT_PAGE_SIZE;
 
 @RestController
 @RequestMapping("/students")
@@ -24,8 +28,9 @@ public class StudentEndpoint {
     }
 
     @GetMapping
-    public ResponseEntity<?> listAll() {
-        return new ResponseEntity<>(studentDAO.findAll(), HttpStatus.OK);
+    public ResponseEntity<?> listAll(@PageableDefault(page = 0, size = 5)
+            Pageable pageable) {
+        return new ResponseEntity<>(studentDAO.findAll(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -42,7 +47,7 @@ public class StudentEndpoint {
 
     @PostMapping
     @Transactional(rollbackOn = Exception.class)
-    public ResponseEntity<?> save(@Valid @RequestBody Student student) {
+    public ResponseEntity<?> save(@RequestBody @Valid Student student) {
         return new ResponseEntity<>(studentDAO.save(student), HttpStatus.CREATED);
     }
 

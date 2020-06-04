@@ -4,16 +4,19 @@ import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Student extends AbstractEntity {
 
-    @NotBlank
+    @NotNull
     @NotEmpty
+    @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull
     @NotEmpty
+    @NotBlank
     @Email
     private String email;
 

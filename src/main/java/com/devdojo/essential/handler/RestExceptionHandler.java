@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -32,15 +33,18 @@ public class RestExceptionHandler {
     public ResponseEntity<?> handleMethodNotValidException(MethodArgumentNotValidException
                                                                        manvException){
         List<FieldError> fieldErrors = manvException.getBindingResult().getFieldErrors();
-        System.out.println();
+        String fields = fieldErrors.stream().map(FieldError::getField).collect(Collectors.joining(","));
+        String fieldMessages = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(","));
         ValidationErrorDetail rfnDetails = ValidationErrorDetail.Builder
                 .newBuilder()
                 .timestamp(new Date().getTime())
-                .status(HttpStatus.NOT_FOUND.value())
+                .status(HttpStatus.BAD_REQUEST.value())
                 .title("Resource not found")
-                .detail(manvException.getMessage())
+                .detail("Field Validationm error")
                 .developerMessage(manvException.getClass().getName())
+                .field(fields)
+                .fieldMessage(fieldMessages)
                 .build();
-        return new ResponseEntity<>(rfnDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(rfnDetails, HttpStatus.BAD_REQUEST);
     }
 }
